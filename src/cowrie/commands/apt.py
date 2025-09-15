@@ -131,6 +131,7 @@ pages for more information and options.
             self.exit()
             return
 
+        self.packages = {}
         for y in [re.sub("[^A-Za-z0-9]", "", x) for x in self.args[1:]]:
             self.packages[y] = {
                 "version": f"{random.choice([0, 1])}.{random.randint(1, 40)}-{random.randint(1, 10)}",
