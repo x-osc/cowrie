@@ -49,7 +49,6 @@ class Command_aptget(HoneyPotCommand):
             self.do_moo()
         else:
             self.do_locked()
-        self.packages = {}
 
     def sleep(self, time: float, time2: float | None = None) -> defer.Deferred:
         d: defer.Deferred = defer.Deferred()
@@ -192,6 +191,7 @@ pages for more information and options.
                 Command_faked_package_class_factory.getCommand(p)
             )
             yield self.sleep(2)
+        self.packages = {}
         self.exit()
 
     def do_moo(self) -> None:
