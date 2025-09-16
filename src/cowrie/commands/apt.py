@@ -36,6 +36,7 @@ class Command_aptget(HoneyPotCommand):
     Any installed packages, places a 'Segfault' at /usr/bin/PACKAGE.'''
     """
 
+    package_count: int = 259
     packages: dict[str, dict[str, Any]]
 
     def start(self) -> None:
@@ -125,7 +126,7 @@ pages for more information and options.
     @inlineCallbacks
     def do_install(self, *args):
         if len(self.args) <= 1:
-            msg = "0 upgraded, 0 newly installed, 0 to remove and 259 not upgraded.\n"
+            msg = f"0 upgraded, 0 newly installed, 0 to remove and {self.package_count} not upgraded.\n"
             self.write(msg)
             self.exit()
             return
@@ -134,7 +135,7 @@ pages for more information and options.
         for y in [re.sub("[^A-Za-z0-9]", "", x) for x in self.args[1:]]:
             self.packages[y] = {
                 "version": f"{random.choice([0, 1])}.{random.randint(1, 40)}-{random.randint(1, 10)}",
-                "size": random.randint(100, 900),
+                "size": random.randint(20, 800),
             }
         totalsize: int = sum(self.packages[x]["size"] for x in self.packages)
 
@@ -144,7 +145,7 @@ pages for more information and options.
         self.write("The following NEW packages will be installed:\n")
         self.write("  {} ".format(" ".join(self.packages)) + "\n")
         self.write(
-            f"0 upgraded, {len(self.packages)} newly installed, 0 to remove and 259 not upgraded.\n"
+            f"0 upgraded, {len(self.packages)} newly installed, 0 to remove and {self.package_count} not upgraded.\n"
         )
         self.write(f"Need to get {totalsize}.2kB of archives.\n")
         self.write(
@@ -158,8 +159,8 @@ pages for more information and options.
                 )
             )
             i += 1
-            yield self.sleep(1, 2)
-        self.write(f"Fetched {totalsize}.2kB in 1s (4493B/s)\n")
+            yield self.sleep(self.packages[p]["size"] / 312)
+        self.write(f"Fetched {totalsize}.2kB in {totalsize / 312:.0f}s (312kB/s)\n")
         self.write("Reading package fields... Done\n")
         yield self.sleep(1, 2)
         self.write("Reading package status... Done\n")
